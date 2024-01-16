@@ -2,12 +2,14 @@
 name = "pdfhandler"
 version = "0.1.0"
 description = ""
-authors = ["silverscorpio <rajat.newtoneinstein@gmail.com>"]
+authors = ["silverscorpio"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 pypdf = "^3.16.2"
+fpdf2 = "^2.7.7"
+black = "^23.12.1"
 
 
 [build-system]
