@@ -4,6 +4,7 @@
 * function-based
 * common functionality
 * modules (popular) - pypdf (pdfly for CLI apps), pymupdf, pdfminer
+* CLI - click and not argparse
 
 ### Functions
 
