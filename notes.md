@@ -8,45 +8,53 @@
 ### Functions
 
 - pdfhandler (prio based on use-cases)
-	- convert to pdf (word. txt)
-	- pages delete (edit pdf) (2)
-	- rearrange pages (edit pdf) (3)
-	- combine pdfs (1)
-	- compress pdfs (4)
-	- unlock pdf
-	- read pdf (extract contents)
+    - convert to pdf (word. txt)
+    - pages delete (edit pdf) (2)
+    - rearrange pages (edit pdf) (3)
+    - combine pdfs (1)
+    - compress pdfs (4)
+    - unlock pdf
+    - read pdf (extract contents)
 
 #### primary (rest later)
+
+- combine pdfs (1)
 - pages delete (edit pdf) (2)
 - rearrange pages (edit pdf) (3)
-- combine pdfs (1)
 - compress pdfs (4)
 
+### Detailed info for each function
+
 #### combine pdfs (many)
+
 - pages
-  - end-to-end
-  - some specific individual pages (eg. 1,6,8)
-  - page range (3-6, 9-10)
+    - end-to-end
+    - some specific individual pages (eg. 1,6,8)
+    - page range (3-6, 9-10)
 - two files or even more
 - before combining, show the starting few words
 - confirm and perform
 - summary
 
 #### delete pages from pdf (one)
+
 - pages
-  - some specific individual pages (eg. 1,6,8)
-  - page range (3-6, 9-10)
+    - some specific individual pages (eg. 1,6,8)
+    - page range (3-6, 9-10)
 - before deleting, show the starting few words
 - confirm and perform
 - summary
-- 
+-
+
 #### rearrange pages of pdf (one)
+
 - pages
-  - array of page numbers
+    - array of page numbers
 - before finalizing, show the starting few words
 - confirm and perform
 - summary
-- 
+-
+
 #### compress pdfs (many)
 
 - take in as many files
