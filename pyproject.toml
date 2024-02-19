@@ -10,6 +10,7 @@ python = "^3.12"
 pypdf = "^3.16.2"
 fpdf2 = "^2.7.7"
 black = "^23.12.1"
+click = "^8.1.7"
 
 
 [build-system]
