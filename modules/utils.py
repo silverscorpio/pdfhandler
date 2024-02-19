@@ -1,22 +1,29 @@
 import re
-
 from pypdf import PdfWriter, PdfReader
 from pprint import pprint
-import re
 
+# constants
 PDF_PATHS = [
     "../sample_pdfs/sample1.pdf",
     "../sample_pdfs/sample2.pdf",
 ]
+PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
-REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
+# Pdf handling functions
+def parse_input(input_str: str) -> dict:
+    # without '&' between pdf-pages pair
+    split_input = input_str.split()
+    parsed_pdf_pages = {}
+    for idx, val in enumerate(split_input):
+        if not (match := re.search(PDF_PAGES_REGEX, val)) and (
+                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+            parsed_pdf_pages[val] = split_input[idx + 1]
+        elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
+                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+            parsed_pdf_pages[val] = []
+    return parsed_pdf_pages
 
-# for idx, val in enumerate(w):
-#     if not (match := re.search(ex, val)) and (match1:= re.search(ex, w[idx+1])):
-#         stuff[val] = w[idx+1]
-#     elif not (match := re.search(ex, val)) and not (match1:= re.search(ex, w[idx+1])):
-#         stuff[val] = []
 
 def read(filepath: str):
     return PdfReader(filepath)
@@ -41,15 +48,25 @@ def combine(pdfs_pages: dict):
         writer.write(f)
 
 
+def delete():
+    # delete pages (combine excluding the pages to be deleted)
+    pass
+
+
+def rearrange():
+    # rearrange pages (combine with the given order of pages)
+    pass
+
+
+def compress():
+    # compress pdf
+    pass
+
+
 def play():
     pdfs = [read(i) for i in PDF_PATHS]
     pdf = pdfs[1]
     print(pdf.pages)
-
-
-# delete pages (combine excluding the pages to be deleted)
-# rearrange pages (combine with the given order of pages)
-# compress pdf
 
 
 if __name__ == "__main__":
