@@ -38,7 +38,7 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
     if not os.path.isdir("../pdf_results"):
         os.mkdir("../pdf_results")
 
-    with open(f"./pdf_results/{filename}.pdf", "wb") as f:
+    with open(f"../pdf_results/{filename}.pdf", "wb") as f:
         writer_obj.write(f)
 
 
