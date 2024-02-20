@@ -104,9 +104,10 @@ def compress(pdfs: list[str], level: int):
 
 if __name__ == "__main__":
     pdf_pages_dict = {
-        PDF_PATHS[0]: [8, 9],  # projects
-        PDF_PATHS[1]: [6, 7],  # internships
+        PDF_PATHS[0]: range(10, 0, -1),  # projects
+        PDF_PATHS[1]: [5, 3, 4, 2, 1, 6, 7, 8, 9],  # internships
     }
 
     # combine(pdfs_pages=pdf_pages_dict)
-    delete(pdf_pages=pdf_pages_dict)
+    # delete(pdf_pages=pdf_pages_dict)
+    # rearrange(pdf_pages=pdf_pages_dict)
