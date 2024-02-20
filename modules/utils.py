@@ -81,6 +81,7 @@ def rearrange(pdf_pages: dict):
 
 def compress(pdfs: list[str], level: int):
     # compress pdf
+    # https://pypdf.readthedocs.io/en/stable/user/file-size.html
     for file in pdfs:
         pdf = read(file)
         writer = PdfWriter()
