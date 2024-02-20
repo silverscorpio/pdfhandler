@@ -4,15 +4,6 @@ import re
 import os
 from pypdf import PdfWriter, PdfReader
 
-# constants
-PDF_PATHS = [
-    "../sample_pdfs/projects.pdf",  # 10 pages
-    "../sample_pdfs/internships.pdf",  # 9 pages
-    "../sample_pdfs/check.pdf",
-
-    # "../sample_pdfs/sample1.pdf",
-    # "../sample_pdfs/sample2.pdf",
-]
 PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
 
@@ -95,7 +86,7 @@ def rearrange(pdf_pages: dict):
         write_pdf(filename=f"{parse_filepath(file)}_rearranged", writer_obj=writer)
 
 
-def compress(pdfs: list[str], level: int = 5):
+def compress(pdfs: list[str], level: int):
     # level [0-9]: 9 max
     # compress pdf
     # https://pypdf.readthedocs.io/en/stable/user/file-size.html
@@ -111,7 +102,7 @@ def compress(pdfs: list[str], level: int = 5):
         write_pdf(filename=f"{parse_filepath(file)}_compressed", writer_obj=writer)
 
 
-def img_compress(pdfs: list[str], quality: int = 50):
+def img_compress(pdfs: list[str], quality: int):
     # compress images in pdf file
     # scale - quality [0-100]
     for file in pdfs:
@@ -129,6 +120,14 @@ def img_compress(pdfs: list[str], quality: int = 50):
 
 
 if __name__ == "__main__":
+    PDF_PATHS = [
+        "../sample_pdfs/projects.pdf",  # 10 pages
+        "../sample_pdfs/internships.pdf",  # 9 pages
+        "../sample_pdfs/check.pdf",
+
+        # "../sample_pdfs/sample1.pdf",
+        # "../sample_pdfs/sample2.pdf",
+    ]
     pdf_pages_dict = {
         PDF_PATHS[0]: range(10, 0, -1),  # projects
         PDF_PATHS[1]: [5, 3, 4, 2, 1, 6, 7, 8, 9],  # internships
