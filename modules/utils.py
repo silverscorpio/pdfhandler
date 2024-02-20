@@ -1,6 +1,7 @@
 # https://pypdf.readthedocs.io/en/stable/index.html
 
 import re
+import os
 from pypdf import PdfWriter, PdfReader
 
 # constants
@@ -34,6 +35,9 @@ def read(filepath: str):
 
 
 def write_pdf(filename: str, writer_obj: PdfWriter):
+    if not os.path.isdir("../pdf_results"):
+        os.mkdir("../pdf_results")
+
     with open(f"./pdf_results/{filename}.pdf", "wb") as f:
         writer_obj.write(f)
 
@@ -53,7 +57,7 @@ def combine(pdfs_pages: dict):
             for page in pdf.pages:
                 writer.add_page(page)
 
-    write_pdf(filename='combined', writer_obj=writer)
+    write_pdf(filename="combined", writer_obj=writer)
 
 
 def delete(pdf_pages: dict):
@@ -64,7 +68,7 @@ def delete(pdf_pages: dict):
         for req_page in [p for p in pdf.pages if p not in pages]:
             writer.add_page(req_page)
 
-        write_pdf(filename=f"{file}_with_del_pages.pdf", writer_obj=writer)
+        write_pdf(filename=f"{file}_with_del_pages", writer_obj=writer)
 
 
 def rearrange(pdf_pages: dict):
@@ -76,7 +80,7 @@ def rearrange(pdf_pages: dict):
         for idx in req_page_idx:
             writer.add_page(pdf.pages[idx])
 
-        write_pdf(filename=f"{file}_rearranged.pdf", writer_obj=writer)
+        write_pdf(filename=f"{file}_rearranged", writer_obj=writer)
 
 
 def compress(pdfs: list[str], level: int):
@@ -91,11 +95,13 @@ def compress(pdfs: list[str], level: int):
         for page in writer.pages:
             page.compress_content_streams(level=level)
 
-        write_pdf(filename=f"{pdf}_compressed.pdf", writer_obj=writer)
+        write_pdf(filename=f"{pdf}_compressed", writer_obj=writer)
 
 
 if __name__ == "__main__":
     pdf_pages_dict = {
-        PDF_PATHS[0]: [],
-        PDF_PATHS[1]: [2],
+        PDF_PATHS[0]: [8, 9],  # projects
+        PDF_PATHS[1]: [6, 7],  # internships
     }
+
+    combine(pdfs_pages=pdf_pages_dict)
