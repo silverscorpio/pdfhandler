@@ -4,3 +4,4 @@ sample_pdfs/
 notes.md
 .idea/
 /pdf_results/
+modules/__pycache__

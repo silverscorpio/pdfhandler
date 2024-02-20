@@ -21,18 +21,25 @@ def parse_filepath(file_path: str) -> str:
     return fp.name.split(".")[0]
 
 
-def parse_input(input_str: str) -> dict:
+def parse_input(input_str: str) -> dict | list[str]:
     # without '&' between pdf-pages pair
     split_input = input_str.split()
-    parsed_pdf_pages = {}
-    for idx, val in enumerate(split_input):
-        if not (match := re.search(PDF_PAGES_REGEX, val)) and (
-                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
-            parsed_pdf_pages[val] = split_input[idx + 1]
-        elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
-                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
-            parsed_pdf_pages[val] = []
-    return parsed_pdf_pages
+
+    # for compress & img compress
+    if all(['pdf' in i for i in split_input]):
+        return [i.strip().lower() for i in split_input]
+
+    # for combine, delete & rearrange pdf (pages required)
+    else:
+        parsed_pdf_pages = {}
+        for idx, val in enumerate(split_input):
+            if not (match := re.search(PDF_PAGES_REGEX, val)) and (
+                    match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+                parsed_pdf_pages[val] = split_input[idx + 1]
+            elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
+                    match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+                parsed_pdf_pages[val] = []
+        return parsed_pdf_pages
 
 
 def read(filepath: str):
@@ -88,7 +95,7 @@ def rearrange(pdf_pages: dict):
         write_pdf(filename=f"{parse_filepath(file)}_rearranged", writer_obj=writer)
 
 
-def compress(pdfs: list[str], level: int):
+def compress(pdfs: list[str], level: int = 5):
     # level [0-9]: 9 max
     # compress pdf
     # https://pypdf.readthedocs.io/en/stable/user/file-size.html
@@ -104,7 +111,7 @@ def compress(pdfs: list[str], level: int):
         write_pdf(filename=f"{parse_filepath(file)}_compressed", writer_obj=writer)
 
 
-def img_compress(pdfs: list[str], quality: int):
+def img_compress(pdfs: list[str], quality: int = 50):
     # compress images in pdf file
     # scale - quality [0-100]
     for file in pdfs:
