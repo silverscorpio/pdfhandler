@@ -69,7 +69,7 @@ def delete(pdf_pages: dict):
     for file, pages in pdf_pages.items():
         writer = PdfWriter()
         pdf = read(file)
-        for req_page in [p for p in pdf.pages if p not in pages]:
+        for req_page in [p for p in pdf.pages if p.page_number not in [i - 1 for i in pages]]:
             writer.add_page(req_page)
 
         write_pdf(filename=f"{parse_filepath(file)}_with_del_pages", writer_obj=writer)
