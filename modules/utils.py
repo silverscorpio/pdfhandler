@@ -1,5 +1,5 @@
 # https://pypdf.readthedocs.io/en/stable/index.html
-
+from pathlib import Path
 import re
 import os
 from pypdf import PdfWriter, PdfReader
@@ -15,11 +15,11 @@ PDF_PATHS = [
 PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
 
-def get_file_without_ext(file_with_ext: str) -> str:
-    return file_with_ext.split(".")[0]
+def parse_filepath(file_path: str) -> str:
+    fp = Path(file_path)
+    return fp.name.split(".")[0]
 
 
-# Pdf handling functions
 def parse_input(input_str: str) -> dict:
     # without '&' between pdf-pages pair
     split_input = input_str.split()
@@ -72,7 +72,7 @@ def delete(pdf_pages: dict):
         for req_page in [p for p in pdf.pages if p not in pages]:
             writer.add_page(req_page)
 
-        write_pdf(filename=f"{get_file_without_ext(file)}_with_del_pages", writer_obj=writer)
+        write_pdf(filename=f"{parse_filepath(file)}_with_del_pages", writer_obj=writer)
 
 
 def rearrange(pdf_pages: dict):
@@ -84,7 +84,7 @@ def rearrange(pdf_pages: dict):
         for idx in req_page_idx:
             writer.add_page(pdf.pages[idx])
 
-        write_pdf(filename=f"{get_file_without_ext(file)}_rearranged", writer_obj=writer)
+        write_pdf(filename=f"{parse_filepath(file)}_rearranged", writer_obj=writer)
 
 
 def compress(pdfs: list[str], level: int):
@@ -99,7 +99,7 @@ def compress(pdfs: list[str], level: int):
         for page in writer.pages:
             page.compress_content_streams(level=level)
 
-        write_pdf(filename=f"{get_file_without_ext(file)}_compressed", writer_obj=writer)
+        write_pdf(filename=f"{parse_filepath(file)}_compressed", writer_obj=writer)
 
 
 if __name__ == "__main__":

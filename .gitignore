@@ -3,3 +3,4 @@ sample_pdfs/
 .DS_Store
 notes.md
 .idea/
+/pdf_results/
