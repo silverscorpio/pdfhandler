@@ -8,6 +8,7 @@ from pypdf import PdfWriter, PdfReader
 PDF_PATHS = [
     "../sample_pdfs/projects.pdf",  # 10 pages
     "../sample_pdfs/internships.pdf",  # 9 pages
+    "../sample_pdfs/check.pdf",
 
     # "../sample_pdfs/sample1.pdf",
     # "../sample_pdfs/sample2.pdf",
@@ -88,6 +89,7 @@ def rearrange(pdf_pages: dict):
 
 
 def compress(pdfs: list[str], level: int):
+    # level [0-9]: 9 max
     # compress pdf
     # https://pypdf.readthedocs.io/en/stable/user/file-size.html
     for file in pdfs:
@@ -102,6 +104,23 @@ def compress(pdfs: list[str], level: int):
         write_pdf(filename=f"{parse_filepath(file)}_compressed", writer_obj=writer)
 
 
+def img_compress(pdfs: list[str], quality: int):
+    # compress images in pdf file
+    # scale - quality [0-100]
+    for file in pdfs:
+        pdf = read(file)
+        writer = PdfWriter()
+
+        for page in pdf.pages:
+            writer.add_page(page)
+
+        for page in writer.pages:
+            for img in page.images:
+                img.replace(img.image, quality=quality)
+
+        write_pdf(filename=f"{parse_filepath(file)}_img_compressed", writer_obj=writer)
+
+
 if __name__ == "__main__":
     pdf_pages_dict = {
         PDF_PATHS[0]: range(10, 0, -1),  # projects
@@ -111,3 +130,4 @@ if __name__ == "__main__":
     # combine(pdfs_pages=pdf_pages_dict)
     # delete(pdf_pages=pdf_pages_dict)
     # rearrange(pdf_pages=pdf_pages_dict)
+    # img_compress(pdfs=[PDF_PATHS[-1]], quality=10)
