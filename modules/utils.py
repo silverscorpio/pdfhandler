@@ -23,10 +23,12 @@ def parse_input_for_edit(input_str: str) -> dict:
     parsed_pdf_pages = {}
     for idx, val in enumerate(split_input):
         if not (match := re.search(PDF_PAGES_REGEX, val)) and (
-                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+            match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
+        ):
             parsed_pdf_pages[val] = split_input[idx + 1]
         elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
-                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+            match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
+        ):
             parsed_pdf_pages[val] = []
     return parsed_pdf_pages
 
@@ -45,7 +47,7 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
 
 # combine pdfs
 def combine(pdfs_pages: dict):
-    """ {pdf1: [1,3,4], pdf2: [4,5], pdf3:[], ...} """
+    """{pdf1: [1,3,4], pdf2: [4,5], pdf3:[], ...}"""
 
     writer = PdfWriter()
 
@@ -66,10 +68,15 @@ def delete(pdf_pages: dict):
     for file, pages in pdf_pages.items():
         writer = PdfWriter()
         pdf = read(file)
-        for req_page in [p for p in pdf.pages if p.page_number not in [i - 1 for i in pages]]:
+        for req_page in [
+            p for p in pdf.pages if p.page_number not in [i - 1 for i in pages]
+        ]:
             writer.add_page(req_page)
 
-        write_pdf(filename=f"{parse_filepath(file)}_with_del_pages", writer_obj=writer)
+        write_pdf(
+            filename=f"{parse_filepath(file)}_with_del_pages",
+            writer_obj=writer,
+        )
 
 
 def rearrange(pdf_pages: dict):
@@ -81,7 +88,9 @@ def rearrange(pdf_pages: dict):
         for idx in req_page_idx:
             writer.add_page(pdf.pages[idx])
 
-        write_pdf(filename=f"{parse_filepath(file)}_rearranged", writer_obj=writer)
+        write_pdf(
+            filename=f"{parse_filepath(file)}_rearranged", writer_obj=writer
+        )
 
 
 def compress(pdfs: list[str], level: int):
@@ -97,7 +106,9 @@ def compress(pdfs: list[str], level: int):
         for page in writer.pages:
             page.compress_content_streams(level=level)
 
-        write_pdf(filename=f"{parse_filepath(file)}_compressed", writer_obj=writer)
+        write_pdf(
+            filename=f"{parse_filepath(file)}_compressed", writer_obj=writer
+        )
 
 
 def img_compress(pdfs: list[str], quality: int):
@@ -114,7 +125,10 @@ def img_compress(pdfs: list[str], quality: int):
             for img in page.images:
                 img.replace(img.image, quality=quality)
 
-        write_pdf(filename=f"{parse_filepath(file)}_img_compressed", writer_obj=writer)
+        write_pdf(
+            filename=f"{parse_filepath(file)}_img_compressed",
+            writer_obj=writer,
+        )
 
 
 if __name__ == "__main__":
@@ -123,7 +137,6 @@ if __name__ == "__main__":
         "../sample_pdfs/projects.pdf",  # 10 pages
         "../sample_pdfs/internships.pdf",  # 9 pages
         "../sample_pdfs/check.pdf",
-
         # "../sample_pdfs/sample1.pdf",
         # "../sample_pdfs/sample2.pdf",
     ]
