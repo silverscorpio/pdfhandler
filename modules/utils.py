@@ -12,25 +12,23 @@ def parse_filepath(file_path: str) -> str:
     return fp.name.split(".")[0]
 
 
-def parse_input(input_str: str) -> dict | list[str]:
-    # without '&' between pdf-pages pair
-    split_input = input_str.split()
+def parse_input_for_reduce(input_str: str) -> list:
+    # for compression funcs
+    return [i.strip().lower() for i in input_str.split()]
 
-    # for compress & img compress
-    if all(['pdf' in i for i in split_input]):
-        return [i.strip().lower() for i in split_input]
 
+def parse_input_for_edit(input_str: str) -> dict:
     # for combine, delete & rearrange pdf (pages required)
-    else:
-        parsed_pdf_pages = {}
-        for idx, val in enumerate(split_input):
-            if not (match := re.search(PDF_PAGES_REGEX, val)) and (
-                    match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
-                parsed_pdf_pages[val] = split_input[idx + 1]
-            elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
-                    match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
-                parsed_pdf_pages[val] = []
-        return parsed_pdf_pages
+    split_input = input_str.split()
+    parsed_pdf_pages = {}
+    for idx, val in enumerate(split_input):
+        if not (match := re.search(PDF_PAGES_REGEX, val)) and (
+                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+            parsed_pdf_pages[val] = split_input[idx + 1]
+        elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
+                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])):
+            parsed_pdf_pages[val] = []
+    return parsed_pdf_pages
 
 
 def read(filepath: str):
