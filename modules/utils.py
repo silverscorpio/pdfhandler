@@ -118,6 +118,7 @@ def img_compress(pdfs: list[str], quality: int):
 
 
 if __name__ == "__main__":
+    # for experimenting
     PDF_PATHS = [
         "../sample_pdfs/projects.pdf",  # 10 pages
         "../sample_pdfs/internships.pdf",  # 9 pages
