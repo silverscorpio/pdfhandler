@@ -18,6 +18,8 @@ HANDLE_PDF = {
 }
 
 
+# TODO individual pdfs with pages - change parsers & arguments (n=-1)
+
 @click.command()
 @click.argument("pdf_operation")
 @click.argument("pdf_data")
