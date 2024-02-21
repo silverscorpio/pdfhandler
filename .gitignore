@@ -5,3 +5,4 @@ notes.md
 .idea/
 /pdf_results/
 modules/__pycache__
+modules/scratch.py

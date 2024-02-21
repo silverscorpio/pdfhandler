@@ -23,11 +23,11 @@ def parse_input_for_edit(input_str: str) -> dict:
     parsed_pdf_pages = {}
     for idx, val in enumerate(split_input):
         if not (match := re.search(PDF_PAGES_REGEX, val)) and (
-            match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
+                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
         ):
             parsed_pdf_pages[val] = split_input[idx + 1]
         elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
-            match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
+                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
         ):
             parsed_pdf_pages[val] = []
     return parsed_pdf_pages
@@ -129,23 +129,3 @@ def img_compress(pdfs: list[str], quality: int):
             filename=f"{parse_filepath(file)}_img_compressed",
             writer_obj=writer,
         )
-
-
-if __name__ == "__main__":
-    # for experimenting
-    PDF_PATHS = [
-        "../sample_pdfs/projects.pdf",  # 10 pages
-        "../sample_pdfs/internships.pdf",  # 9 pages
-        "../sample_pdfs/check.pdf",
-        # "../sample_pdfs/sample1.pdf",
-        # "../sample_pdfs/sample2.pdf",
-    ]
-    pdf_pages_dict = {
-        PDF_PATHS[0]: range(10, 0, -1),  # projects
-        PDF_PATHS[1]: [5, 3, 4, 2, 1, 6, 7, 8, 9],  # internships
-    }
-
-    # combine(pdfs_pages=pdf_pages_dict)
-    # delete(pdf_pages=pdf_pages_dict)
-    # rearrange(pdf_pages=pdf_pages_dict)
-    # img_compress(pdfs=[PDF_PATHS[-1]], quality=10)
