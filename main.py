@@ -1,5 +1,8 @@
+from modules.handler import handler
+
+
 def main():
-    print("hello")
+    handler()
 
 
 if __name__ == '__main__':
