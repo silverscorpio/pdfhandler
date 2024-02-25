@@ -7,6 +7,9 @@ from pypdf import PdfWriter, PdfReader
 PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
 
+# TODO check if file exists
+# TODO 3 cases for pages (all, few, range (most)) - parse accordingly
+
 def parse_filepath(file_path: str) -> str:
     fp = Path(file_path)
     return fp.name.split(".")[0]
