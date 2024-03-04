@@ -7,12 +7,39 @@ from pypdf import PdfWriter, PdfReader
 PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
 
-# TODO check if file exists
-# TODO 3 cases for pages (all, few, range (most)) - parse accordingly
+# TODO check if file exists - through click Path argument
+
+def pages_parser(pages: str = '4,5,6, 8-19, 1-3, 20-30, 31,34') -> list:
+    final_pages = []
+    indiv_pages = [i.strip() for i in pages.split(',')]
+    for i in indiv_pages:
+        if '-' not in i:
+            final_pages.append(int(i))
+        else:
+            num_range = [int(i) for i in i.split('-')]
+            final_pages.extend(range(num_range[0], num_range[1] + 1))
+
+    return sorted(final_pages)
+
+
+def parser(pdfs: tuple):
+    data = {}
+    for i in pdfs:
+        split_data: list[str] = i.split(maxsplit=1)
+        if len(split_data) == 1:
+            data[split_data[0].strip().lower()] = []
+        else:
+            data[split_data[0].strip().lower()] = pages_parser(pages=split_data[1])
+    print(data)
+
 
 def parse_filepath(file_path: str) -> str:
     fp = Path(file_path)
     return fp.name.split(".")[0]
+
+
+def read(filepath: str):
+    return PdfReader(filepath)
 
 
 def parse_input_for_reduce(input_str: str) -> list:
@@ -34,10 +61,6 @@ def parse_input_for_edit(input_str: str) -> dict:
         ):
             parsed_pdf_pages[val] = []
     return parsed_pdf_pages
-
-
-def read(filepath: str):
-    return PdfReader(filepath)
 
 
 def write_pdf(filename: str, writer_obj: PdfWriter):
