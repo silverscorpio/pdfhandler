@@ -54,7 +54,7 @@ def pages_parser(pages: str) -> list[int]:
             num_range = [int(i) for i in i.split('-')]
             final_pages.extend(range(num_range[0], num_range[1] + 1))
 
-    return sorted(final_pages)
+    return final_pages
 
 
 def parser(input_data: tuple[str]) -> dict:
@@ -65,7 +65,7 @@ def parser(input_data: tuple[str]) -> dict:
         if len(split_data) == 1:
             data[split_data[0].strip().lower()] = []
         else:
-            data[split_data[0].strip().lower()] = pages_parser(pages=split_data[1])
+            data[split_data[0].strip().lower()] = sorted(pages_parser(pages=split_data[1]))
 
     return data
 
@@ -108,6 +108,7 @@ def delete_pages(pdf_pages: dict):
 # rearrange pdfs (pages)
 def rearrange(pdf_pages: dict):
     # rearrange pages (combine with the given order of pages)
+    # preferable for small rearrangement - GUI best
     for file, pages in pdf_pages.items():
         writer = PdfWriter()
         pdf = read(file)
