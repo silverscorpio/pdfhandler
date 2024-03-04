@@ -1,11 +1,10 @@
 # https://pypdf.readthedocs.io/en/stable/index.html
 import sys
 from pathlib import Path
-import re
 import os
-from pypdf import PdfWriter, PdfReader
 
-PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
+import click
+from pypdf import PdfWriter, PdfReader
 
 
 def read(filepath: str):
@@ -36,11 +35,11 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
         writer_obj.write(f)
 
 
-def parser_compression(pdfs_input: tuple[str]) -> dict:
-    # for compression and image reduction in pdf
-    data = {}
-
-    return data
+def prompt_compress_level(prompt_text: str, min_val: int, max_val: int, clamp: bool = True) -> int:
+    return click.prompt(
+        prompt_text,
+        type=click.IntRange(min_val, max_val, clamp=clamp),
+    )
 
 
 def pages_parser(pages: str) -> list[int]:
@@ -57,10 +56,10 @@ def pages_parser(pages: str) -> list[int]:
     return sorted(final_pages)
 
 
-def parser(pdfs: tuple[str]) -> dict:
+def parser(input_data: tuple[str]) -> dict:
     # CLI ('a.pdf 1,2', 'b.pdf 4,5,6, 8-19', 'c.pdf', 'd.pdf 4-10')
     data = {}
-    for i in pdfs:
+    for i in input_data:
         split_data: list[str] = i.split(maxsplit=1)
         if len(split_data) == 1:
             data[split_data[0].strip().lower()] = []
@@ -88,7 +87,8 @@ def combine(pdfs_pages: dict):
     write_pdf(filename="combined", writer_obj=writer)
 
 
-def delete(pdf_pages: dict):
+# delete pages from pdfs
+def delete_pages(pdf_pages: dict):
     # delete pages (combine excluding the pages to be deleted)
     for file, pages in pdf_pages.items():
         writer = PdfWriter()
@@ -104,6 +104,7 @@ def delete(pdf_pages: dict):
         )
 
 
+# rearrange pdfs (pages)
 def rearrange(pdf_pages: dict):
     # rearrange pages (combine with the given order of pages)
     for file, pages in pdf_pages.items():
@@ -118,39 +119,39 @@ def rearrange(pdf_pages: dict):
         )
 
 
-def compress(pdfs: list[str], level: int):
+# compress pdf
+def compress(pdf_file: str, def_level: int = 5):
     # level [0-9]: 9 max
     # compress pdf
     # https://pypdf.readthedocs.io/en/stable/user/file-size.html
-    for file in pdfs:
-        pdf = read(file)
-        writer = PdfWriter()
-        for page in pdf.pages:
-            writer.add_page(page)
+    pdf = read(pdf_file)
+    writer = PdfWriter()
+    for page in pdf.pages:
+        writer.add_page(page)
 
-        for page in writer.pages:
-            page.compress_content_streams(level=level)
+    for page in writer.pages:
+        page.compress_content_streams(level=def_level)
 
-        write_pdf(
-            filename=f"{get_filename(file)}_compressed", writer_obj=writer
-        )
+    write_pdf(
+        filename=f"{get_filename(pdf_file)}_compressed", writer_obj=writer
+    )
 
 
-def img_compress(pdfs: list[str], quality: list[int]):
+# compress images in pdfs
+def pdf_img_compress(pdf_file: str, def_quality: int = 50):
     # compress images in pdf file
     # scale - quality [0-100]
-    for file in pdfs:
-        pdf = read(file)
-        writer = PdfWriter()
+    pdf = read(pdf_file)
+    writer = PdfWriter()
 
-        for page in pdf.pages:
-            writer.add_page(page)
+    for page in pdf.pages:
+        writer.add_page(page)
 
-        for page in writer.pages:
-            for img in page.images:
-                img.replace(img.image, quality=quality)
+    for page in writer.pages:
+        for img in page.images:
+            img.replace(img.image, quality=def_quality)
 
-        write_pdf(
-            filename=f"{get_filename(file)}_img_compressed",
-            writer_obj=writer,
-        )
+    write_pdf(
+        filename=f"{get_filename(pdf_file)}_img_compressed",
+        writer_obj=writer,
+    )
