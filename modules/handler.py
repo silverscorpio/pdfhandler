@@ -4,8 +4,6 @@ from utils import (
     rearrange,
     compress,
     img_compress,
-    parse_input_for_edit,
-    parse_input_for_reduce,
 )
 import click
 

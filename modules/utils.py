@@ -7,9 +7,29 @@ from pypdf import PdfWriter, PdfReader
 PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
 
-# TODO check if file exists - through click Path argument
+def read(filepath: str):
+    return PdfReader(filepath)
 
-def pages_parser(pages: str = '4,5,6, 8-19, 1-3, 20-30, 31,34') -> list:
+
+def get_filename(file_path: str) -> str:
+    fp = Path(file_path)
+    return fp.name.split(".")[0]
+
+
+def parse_input_for_reduce(input_str: str) -> list:
+    # for compression funcs
+    return [i.strip().lower() for i in input_str.split()]
+
+
+def write_pdf(filename: str, writer_obj: PdfWriter):
+    if not os.path.isdir("../pdf_results"):
+        os.mkdir("../pdf_results")
+
+    with open(f"../pdf_results/{filename}.pdf", "wb") as f:
+        writer_obj.write(f)
+
+
+def pages_parser(pages: str) -> list[int]:
     final_pages = []
     indiv_pages = [i.strip() for i in pages.split(',')]
     for i in indiv_pages:
@@ -23,6 +43,7 @@ def pages_parser(pages: str = '4,5,6, 8-19, 1-3, 20-30, 31,34') -> list:
 
 
 def parser(pdfs: tuple):
+    # CLI ('a.pdf 1,2', 'b.pdf 4,5,6, 8-19', 'c.pdf', 'd.pdf 4-10')
     data = {}
     for i in pdfs:
         split_data: list[str] = i.split(maxsplit=1)
@@ -30,45 +51,8 @@ def parser(pdfs: tuple):
             data[split_data[0].strip().lower()] = []
         else:
             data[split_data[0].strip().lower()] = pages_parser(pages=split_data[1])
-    print(data)
 
-
-def parse_filepath(file_path: str) -> str:
-    fp = Path(file_path)
-    return fp.name.split(".")[0]
-
-
-def read(filepath: str):
-    return PdfReader(filepath)
-
-
-def parse_input_for_reduce(input_str: str) -> list:
-    # for compression funcs
-    return [i.strip().lower() for i in input_str.split()]
-
-
-def parse_input_for_edit(input_str: str) -> dict:
-    # for combine, delete & rearrange pdf (pages required)
-    split_input = input_str.split()
-    parsed_pdf_pages = {}
-    for idx, val in enumerate(split_input):
-        if not (match := re.search(PDF_PAGES_REGEX, val)) and (
-                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
-        ):
-            parsed_pdf_pages[val] = split_input[idx + 1]
-        elif not (match := re.search(PDF_PAGES_REGEX, val)) and not (
-                match1 := re.search(PDF_PAGES_REGEX, split_input[idx + 1])
-        ):
-            parsed_pdf_pages[val] = []
-    return parsed_pdf_pages
-
-
-def write_pdf(filename: str, writer_obj: PdfWriter):
-    if not os.path.isdir("../pdf_results"):
-        os.mkdir("../pdf_results")
-
-    with open(f"../pdf_results/{filename}.pdf", "wb") as f:
-        writer_obj.write(f)
+    return data
 
 
 # combine pdfs
@@ -100,7 +84,7 @@ def delete(pdf_pages: dict):
             writer.add_page(req_page)
 
         write_pdf(
-            filename=f"{parse_filepath(file)}_with_del_pages",
+            filename=f"{get_filename(file)}_with_del_pages",
             writer_obj=writer,
         )
 
@@ -115,7 +99,7 @@ def rearrange(pdf_pages: dict):
             writer.add_page(pdf.pages[idx])
 
         write_pdf(
-            filename=f"{parse_filepath(file)}_rearranged", writer_obj=writer
+            filename=f"{get_filename(file)}_rearranged", writer_obj=writer
         )
 
 
@@ -133,11 +117,11 @@ def compress(pdfs: list[str], level: int):
             page.compress_content_streams(level=level)
 
         write_pdf(
-            filename=f"{parse_filepath(file)}_compressed", writer_obj=writer
+            filename=f"{get_filename(file)}_compressed", writer_obj=writer
         )
 
 
-def img_compress(pdfs: list[str], quality: int):
+def img_compress(pdfs: list[str], quality: list[int]):
     # compress images in pdf file
     # scale - quality [0-100]
     for file in pdfs:
@@ -152,6 +136,6 @@ def img_compress(pdfs: list[str], quality: int):
                 img.replace(img.image, quality=quality)
 
         write_pdf(
-            filename=f"{parse_filepath(file)}_img_compressed",
+            filename=f"{get_filename(file)}_img_compressed",
             writer_obj=writer,
         )
