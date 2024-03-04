@@ -1,5 +1,4 @@
 from modules.utils import (
-    parser,
     combine,
     delete_pages,
     rearrange,
@@ -28,20 +27,22 @@ def handler(pdf_operation: str, data):
     match pdf_operation:
         case "compress":
             compression_level = prompt_compress_level(
-                "Required pdf compression level [0-9 (max)], default=5: ",
+                "Required pdf compression level [0-9 (max)]: ",
                 0,
-                9)
+                9,
+                5)
 
-            given_pdf = data.strip().lower()
+            given_pdf = data[0].strip().lower()
             HANDLE_PDF[pdf_operation](given_pdf, compression_level)
 
         case "image-compress":
             image_quality = prompt_compress_level(
-                "Required image quality level [0-100 (max)], default=50: ",
+                "Required image quality level [0-100 (max)]: ",
                 0,
-                100)
+                100,
+                50)
 
-            given_pdf = data.strip().lower()
+            given_pdf = data[0].strip().lower()
             HANDLE_PDF[pdf_operation](given_pdf, image_quality)
 
         case "combine" | "delete" | "rearrange":

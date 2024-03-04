@@ -36,10 +36,11 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
         writer_obj.write(f)
 
 
-def prompt_compress_level(prompt_text: str, min_val: int, max_val: int, clamp: bool = True) -> int:
+def prompt_compress_level(prompt_text: str, min_val: int, max_val: int, default_val: int, clamp: bool = True) -> int:
     return click.prompt(
         prompt_text,
         type=click.IntRange(min_val, max_val, clamp=clamp),
+        default=default_val,
     )
 
 
