@@ -1,4 +1,5 @@
 # https://pypdf.readthedocs.io/en/stable/index.html
+import sys
 from pathlib import Path
 import re
 import os
@@ -8,7 +9,13 @@ PDF_PAGES_REGEX = re.compile(r"(^\d+-\d+$)|(^(\d,)+\d$)")
 
 
 def read(filepath: str):
-    return PdfReader(filepath)
+    try:
+        pdf = PdfReader(filepath)
+    except FileNotFoundError:
+        print(f"{filepath} not found")
+        sys.exit()
+    else:
+        return pdf
 
 
 def get_filename(file_path: str) -> str:
@@ -29,7 +36,15 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
         writer_obj.write(f)
 
 
+def parser_compression(pdfs_input: tuple[str]) -> dict:
+    # for compression and image reduction in pdf
+    data = {}
+
+    return data
+
+
 def pages_parser(pages: str) -> list[int]:
+    # for combine, delete, rearrange ops
     final_pages = []
     indiv_pages = [i.strip() for i in pages.split(',')]
     for i in indiv_pages:
@@ -42,7 +57,7 @@ def pages_parser(pages: str) -> list[int]:
     return sorted(final_pages)
 
 
-def parser(pdfs: tuple):
+def parser(pdfs: tuple[str]) -> dict:
     # CLI ('a.pdf 1,2', 'b.pdf 4,5,6, 8-19', 'c.pdf', 'd.pdf 4-10')
     data = {}
     for i in pdfs:
