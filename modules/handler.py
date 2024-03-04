@@ -1,4 +1,4 @@
-from utils import (
+from modules.utils import (
     parser,
     combine,
     delete_pages,
