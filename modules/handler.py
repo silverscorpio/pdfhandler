@@ -45,7 +45,7 @@ def handler(pdf_operation: str, data):
             HANDLE_PDF[pdf_operation](given_pdf, image_quality)
 
         case "combine" | "delete" | "rearrange":
-            HANDLE_PDF[pdf_operation](parser(input_data=data))
+            HANDLE_PDF[pdf_operation](raw_data=data)
 
         case _:
             raise click.BadParameter(

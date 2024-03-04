@@ -65,18 +65,19 @@ def parser(input_data: tuple[str]) -> dict:
         if len(split_data) == 1:
             data[split_data[0].strip().lower()] = []
         else:
-            data[split_data[0].strip().lower()] = sorted(pages_parser(pages=split_data[1]))
+            data[split_data[0].strip().lower()] = pages_parser(pages=split_data[1])
 
     return data
 
 
 # combine pdfs
-def combine(pdfs_pages: dict):
+def combine(raw_data: tuple[str]):
     """{pdf1: [1,3,4], pdf2: [4,5], pdf3:[], ...}"""
-
+    parsed_data = parser(input_data=raw_data)
     writer = PdfWriter()
 
-    for file, pages in pdfs_pages.items():
+    for file, pages in parsed_data.items():
+        pages = sorted(pages)
         pdf = read(file)
         if pages:
             for page in [i - 1 for i in pages]:
@@ -89,9 +90,11 @@ def combine(pdfs_pages: dict):
 
 
 # delete pages from pdfs
-def delete_pages(pdf_pages: dict):
+def delete_pages(raw_data: tuple[str]):
     # delete pages (combine excluding the pages to be deleted)
-    for file, pages in pdf_pages.items():
+    parsed_data = parser(input_data=raw_data)
+    for file, pages in parsed_data.items():
+        pages = sorted(pages)
         writer = PdfWriter()
         pdf = read(file)
         for req_page in [
@@ -106,10 +109,11 @@ def delete_pages(pdf_pages: dict):
 
 
 # rearrange pdfs (pages)
-def rearrange(pdf_pages: dict):
+def rearrange(raw_data: tuple[str]):
     # rearrange pages (combine with the given order of pages)
     # preferable for small rearrangement - GUI best
-    for file, pages in pdf_pages.items():
+    parsed_data = parser(input_data=raw_data)
+    for file, pages in parsed_data.items():
         writer = PdfWriter()
         pdf = read(file)
         req_page_idx = [i - 1 for i in pages]
