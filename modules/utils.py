@@ -7,7 +7,7 @@ from pypdf import PdfWriter, PdfReader
 
 
 def read(filepath: str):
-    """ Read the Pdf file, if it exists and return Pdfreader obj, else exit """
+    """Read the Pdf file, if it exists and return Pdfreader obj, else exit"""
 
     try:
         pdf = PdfReader(filepath)
@@ -19,14 +19,14 @@ def read(filepath: str):
 
 
 def get_filename(file_path: str) -> str:
-    """ Get the filename without extension """
+    """Get the filename without extension"""
 
     fp = Path(file_path)
     return fp.name.split(".")[0]
 
 
 def write_pdf(filename: str, writer_obj: PdfWriter):
-    """ Generate the final resulting PDF file in a dir within the curr dir """
+    """Generate the final resulting PDF file in a dir within the curr dir"""
 
     if not os.path.isdir("./pdf_results"):
         os.mkdir("./pdf_results")
@@ -35,12 +35,14 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
         writer_obj.write(f)
 
 
-def prompt_compress_level(prompt_text: str,
-                          min_val: int,
-                          max_val: int,
-                          default_val: int,
-                          clamp: bool = True) -> int:
-    """ Prompt the use for compression op """
+def prompt_compress_level(
+    prompt_text: str,
+    min_val: int,
+    max_val: int,
+    default_val: int,
+    clamp: bool = True,
+) -> int:
+    """Prompt the use for compression op"""
 
     return click.prompt(
         prompt_text,
@@ -50,22 +52,22 @@ def prompt_compress_level(prompt_text: str,
 
 
 def pages_parser(pages: str) -> list[int]:
-    """ Parse the pages from given input """
+    """Parse the pages from given input"""
     # for combine, delete, rearrange ops
     final_pages = []
-    indiv_pages = [i.strip() for i in pages.split(',')]
+    indiv_pages = [i.strip() for i in pages.split(",")]
     for i in indiv_pages:
-        if '-' not in i:
+        if "-" not in i:
             final_pages.append(int(i))
         else:
-            num_range = [int(i) for i in i.split('-')]
+            num_range = [int(i) for i in i.split("-")]
             final_pages.extend(range(num_range[0], num_range[1] + 1))
 
     return final_pages
 
 
 def parser(input_data: tuple[str]) -> dict:
-    """ Main parser for reading from command line """
+    """Main parser for reading from command line"""
     # CLI ('a.pdf 1,2', 'b.pdf 4,5,6, 8-19', 'c.pdf', 'd.pdf 4-10')
     data = {}
     for i in input_data:
@@ -73,14 +75,16 @@ def parser(input_data: tuple[str]) -> dict:
         if len(split_data) == 1:
             data[split_data[0].strip().lower()] = []
         else:
-            data[split_data[0].strip().lower()] = pages_parser(pages=split_data[1])
+            data[split_data[0].strip().lower()] = pages_parser(
+                pages=split_data[1]
+            )
 
     return data
 
 
 # combine pdfs
 def combine(raw_data: tuple[str]) -> None:
-    """ Combine pdf(s) with given pages """
+    """Combine pdf(s) with given pages"""
     # {pdf1: [1,3,4], pdf2: [4,5], pdf3:[], ...}
     parsed_data = parser(input_data=raw_data)
     writer = PdfWriter()
@@ -100,7 +104,7 @@ def combine(raw_data: tuple[str]) -> None:
 
 # delete pages from pdfs
 def delete_pages(raw_data: tuple[str]) -> None:
-    """ Delete pages from given pdf(s) """
+    """Delete pages from given pdf(s)"""
     # delete pages (combine excluding the pages to be deleted)
     parsed_data = parser(input_data=raw_data)
     for file, pages in parsed_data.items():
@@ -120,7 +124,7 @@ def delete_pages(raw_data: tuple[str]) -> None:
 
 # rearrange pdfs (pages)
 def rearrange(raw_data: tuple[str]) -> None:
-    """ Generate a pdf resulting from the given pages in a specific order """
+    """Generate a pdf resulting from the given pages in a specific order"""
     # rearrange pages (combine with the given order of pages)
     # preferable for small rearrangement - GUI best
     parsed_data = parser(input_data=raw_data)
@@ -138,7 +142,7 @@ def rearrange(raw_data: tuple[str]) -> None:
 
 # compress pdf
 def compress(pdf_file: str, def_level: int = 5) -> None:
-    """ Compress the pdf for a given compression level """
+    """Compress the pdf for a given compression level"""
     # level [0-9]: 9 max
     # compress pdf
     # https://pypdf.readthedocs.io/en/stable/user/file-size.html
@@ -157,7 +161,7 @@ def compress(pdf_file: str, def_level: int = 5) -> None:
 
 # compress images in pdfs
 def pdf_img_compress(pdf_file: str, def_quality: int = 50) -> None:
-    """ Compress the images in a pdf file for a given image quality level """
+    """Compress the images in a pdf file for a given image quality level"""
     # compress images in pdf file
     # scale - quality [0-100]
     pdf = read(pdf_file)
