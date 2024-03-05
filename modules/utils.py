@@ -36,13 +36,13 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
 
 
 def prompt_compress_level(
-    prompt_text: str,
-    min_val: int,
-    max_val: int,
-    default_val: int,
-    clamp: bool = True,
+        prompt_text: str,
+        min_val: int,
+        max_val: int,
+        default_val: int,
+        clamp: bool = True,
 ) -> int:
-    """Prompt the use for compression op"""
+    """Prompt the user for compression op"""
 
     return click.prompt(
         prompt_text,
