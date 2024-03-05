@@ -1,4 +1,3 @@
-# https://pypdf.readthedocs.io/en/stable/index.html
 import sys
 from pathlib import Path
 import os
@@ -8,6 +7,8 @@ from pypdf import PdfWriter, PdfReader
 
 
 def read(filepath: str):
+    """ Read the Pdf file, if it exists and return Pdfreader obj, else exit """
+
     try:
         pdf = PdfReader(filepath)
     except FileNotFoundError:
@@ -18,17 +19,15 @@ def read(filepath: str):
 
 
 def get_filename(file_path: str) -> str:
+    """ Get the filename without extension """
+
     fp = Path(file_path)
     return fp.name.split(".")[0]
 
 
-def parse_input_for_reduce(input_str: str) -> list:
-    # for compression funcs
-    return [i.strip().lower() for i in input_str.split()]
-
-
 def write_pdf(filename: str, writer_obj: PdfWriter):
-    # generate in a dir in the current dir (main.py)
+    """ Generate the final resulting PDF file in a dir within the curr dir """
+
     if not os.path.isdir("./pdf_results"):
         os.mkdir("./pdf_results")
 
@@ -36,7 +35,13 @@ def write_pdf(filename: str, writer_obj: PdfWriter):
         writer_obj.write(f)
 
 
-def prompt_compress_level(prompt_text: str, min_val: int, max_val: int, default_val: int, clamp: bool = True) -> int:
+def prompt_compress_level(prompt_text: str,
+                          min_val: int,
+                          max_val: int,
+                          default_val: int,
+                          clamp: bool = True) -> int:
+    """ Prompt the use for compression op """
+
     return click.prompt(
         prompt_text,
         type=click.IntRange(min_val, max_val, clamp=clamp),
@@ -45,6 +50,7 @@ def prompt_compress_level(prompt_text: str, min_val: int, max_val: int, default_
 
 
 def pages_parser(pages: str) -> list[int]:
+    """ Parse the pages from given input """
     # for combine, delete, rearrange ops
     final_pages = []
     indiv_pages = [i.strip() for i in pages.split(',')]
@@ -59,6 +65,7 @@ def pages_parser(pages: str) -> list[int]:
 
 
 def parser(input_data: tuple[str]) -> dict:
+    """ Main parser for reading from command line """
     # CLI ('a.pdf 1,2', 'b.pdf 4,5,6, 8-19', 'c.pdf', 'd.pdf 4-10')
     data = {}
     for i in input_data:
@@ -72,8 +79,9 @@ def parser(input_data: tuple[str]) -> dict:
 
 
 # combine pdfs
-def combine(raw_data: tuple[str]):
-    """{pdf1: [1,3,4], pdf2: [4,5], pdf3:[], ...}"""
+def combine(raw_data: tuple[str]) -> None:
+    """ Combine pdf(s) with given pages """
+    # {pdf1: [1,3,4], pdf2: [4,5], pdf3:[], ...}
     parsed_data = parser(input_data=raw_data)
     writer = PdfWriter()
 
@@ -91,7 +99,8 @@ def combine(raw_data: tuple[str]):
 
 
 # delete pages from pdfs
-def delete_pages(raw_data: tuple[str]):
+def delete_pages(raw_data: tuple[str]) -> None:
+    """ Delete pages from given pdf(s) """
     # delete pages (combine excluding the pages to be deleted)
     parsed_data = parser(input_data=raw_data)
     for file, pages in parsed_data.items():
@@ -110,7 +119,8 @@ def delete_pages(raw_data: tuple[str]):
 
 
 # rearrange pdfs (pages)
-def rearrange(raw_data: tuple[str]):
+def rearrange(raw_data: tuple[str]) -> None:
+    """ Generate a pdf resulting from the given pages in a specific order """
     # rearrange pages (combine with the given order of pages)
     # preferable for small rearrangement - GUI best
     parsed_data = parser(input_data=raw_data)
@@ -127,7 +137,8 @@ def rearrange(raw_data: tuple[str]):
 
 
 # compress pdf
-def compress(pdf_file: str, def_level: int = 5):
+def compress(pdf_file: str, def_level: int = 5) -> None:
+    """ Compress the pdf for a given compression level """
     # level [0-9]: 9 max
     # compress pdf
     # https://pypdf.readthedocs.io/en/stable/user/file-size.html
@@ -145,7 +156,8 @@ def compress(pdf_file: str, def_level: int = 5):
 
 
 # compress images in pdfs
-def pdf_img_compress(pdf_file: str, def_quality: int = 50):
+def pdf_img_compress(pdf_file: str, def_quality: int = 50) -> None:
+    """ Compress the images in a pdf file for a given image quality level """
     # compress images in pdf file
     # scale - quality [0-100]
     pdf = read(pdf_file)

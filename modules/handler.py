@@ -21,9 +21,9 @@ HANDLE_PDF = {
 @click.command()
 @click.argument("pdf_operation")
 @click.argument("data", type=click.Path(dir_okay=False), nargs=-1)
-def handler(pdf_operation: str, data):
-    # click.echo(pdf_operation)
-    # click.echo(data)
+def handler(pdf_operation: str, data) -> None:
+    """ Pdf Handler function - reads command line jnput and generates the resulting pdf(s) """
+
     match pdf_operation:
         case "compress":
             compression_level = prompt_compress_level(
