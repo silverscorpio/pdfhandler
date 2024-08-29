@@ -10,4 +10,4 @@
     - rearrange based on the given order of pages
     - compress pdf (compression can be adjusted)
     - image quality reduction of images in a pdf (compression can be controlled)
-- Plan to expand further (with Django project) - GUI
+- Plan to expand further (with Django project) - GUI (as part of a web app, currently ongoing)
