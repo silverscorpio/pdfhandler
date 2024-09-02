@@ -1,3 +1,5 @@
+""" Utility functions for PDF operations"""
+
 import sys
 from pathlib import Path
 import os

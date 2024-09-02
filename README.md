@@ -1,13 +1,16 @@
-### PDF Handler
+## PDF Handler
 
-- Utility for handling pdf files for offline access
-- Born out of necessity after facing issues with personal documents for administrative purposes when no net access was
-  available
-- CLI interface
+_Allows local handling of PDF files_
+
+---
+
+- CLI utility
+- Born out of necessity after facing issues with personal documents when no net access was available
 - Most used PDF operations were given priority
     - combine/merge
-    - delete pages
+    - delete page
     - rearrange based on the given order of pages
-    - compress pdf (compression can be adjusted)
-    - image quality reduction of images in a pdf (compression can be controlled)
-- Plan to expand further (with Django project) - GUI
+    - compress pdf (compression level can be adjusted)
+    - image compression in pdf (compression level can be controlled)
+- Stack - Python, pypdf, Click, poetry, ruff
+- Plan to expand further - integration with another Django project
